@@ -26,6 +26,6 @@ public class CategoriaEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer categoria_id;
 	
-	@Column(name = "nombre_area",nullable = false , length = 45)
-	private String nombre_area;
+	@Column(name = "nombre_categoria",nullable = false , length = 45)
+	private String nombre_categoria;
 }
