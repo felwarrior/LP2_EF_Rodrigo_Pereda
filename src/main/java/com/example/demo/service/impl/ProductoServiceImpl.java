@@ -22,7 +22,7 @@ public class ProductoServiceImpl implements ProductoService{
 	}
 	
 	@Override
-	public ProductoEntity buscarProductoPorId(Integer id) {
+	public ProductoEntity buscarProductoPorId(Long id) {
 		// TODO Auto-generated method stub
 		return productoRepository.findById(id.longValue()).get();
 	}
