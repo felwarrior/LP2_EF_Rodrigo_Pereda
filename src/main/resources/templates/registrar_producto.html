@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registrar Producto</title>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+	<div class="container mt-5">
+		<h2>Registrar Producto</h2>
+		<form th:action="@{/nuevo_producto}" th:object="${producto}"
+			method="post">
+			<div class="form-group">
+				<label for="nombre">Nombre</label> <input type="text" id="nombre"
+					name="nombre" class="form-control" th:field="*{nombre}" required>
+			</div>
+			<div class="form-group">
+				<label for="precio">Precio</label> <input type="number" step="0.01"
+					id="precio" name="precio" class="form-control" th:field="*{precio}"
+					required>
+			</div>
+			<div class="form-group">
+				<label for="stock">Stock</label> <input type="number" id="stock"
+					name="stock" class="form-control" th:field="*{stock}" required>
+			</div>
+			<div class="form-group">
+				<label for="categoria">Categoría</label> <select id="categoria"
+					th:field="*{categoriaEntity.categoria_id}">
+					<option th:each="categoria : ${categorias}"
+						th:value="${categoria.categoria_id}"
+						th:text="${categoria.nombre_categoria}"></option>
+				</select>
+			</div>
+			<button type="submit" class="btn btn-primary">Registrar</button>
+		</form>
+	</div>
+
+	<!-- Scripts de Bootstrap y jQuery -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

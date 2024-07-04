@@ -25,14 +25,10 @@
 <body>
     <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
         <a class="navbar-brand" th:href="@{/menu}">Productos</a>
-        <form class="form-inline my-2 my-lg-0" th:action="@{/search}" method="get">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
         <div class="form-inline my-2 my-lg-0 ml-auto">
-            <img th:src="${'/usuario_foto/' + usuario.urlImagen}" alt="Profile" class="profile-pic">
-            <span th:text="${usuario.nombre}" class="ml-2"></span>
-            <a class="btn btn-outline-danger ml-2" th:href="@{/logout}" role="button">Logout</a>
+            <img th:src="${'/usuario_foto/' + foto}" alt="Profile" class="profile-pic">
+            <span th:text="'Bienvenido ' + ${nombre} + ' ' + ${apellidos}" class="ml-2"></span>
+            <a class="btn btn-outline-danger ml-2" th:href="@{/logout}" role="button">Cerrar sesión</a>
         </div>
     </nav>
 
@@ -58,8 +54,8 @@
                     <td th:text="${producto.precio}"></td>
                     <td th:text="${producto.stock}"></td>
                     <td>
+                        <a th:href="@{/detalle_producto/{id}(id=${producto.productoId})}" class="btn btn-info">Ver</a> |
                         <a th:href="@{/editar_producto/{id}(id=${producto.productoId})}" class="btn btn-warning btn-sm">Editar</a>
-                        <a th:href="@{/eliminar_producto/{id}(id=${producto.productoId})}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este producto?');">Eliminar</a>
                     </td>
                 </tr>
             </tbody>

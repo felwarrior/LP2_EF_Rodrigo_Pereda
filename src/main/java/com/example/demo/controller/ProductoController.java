@@ -9,9 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
+import com.example.demo.entity.CategoriaEntity;
 import com.example.demo.entity.ProductoEntity;
 import com.example.demo.entity.UsuarioEntity;
+import com.example.demo.repository.CategoriaRepository;
 import com.example.demo.service.ProductoService;
 import com.example.demo.service.UsuarioService;
 import com.example.demo.service.impl.PdfService;
@@ -24,27 +28,53 @@ public class ProductoController {
 
 	@Autowired
 	private ProductoService productoService;
+	
+	@Autowired
+    private CategoriaRepository categoriaRepository;
 
 	@Autowired
 	private PdfService pdfService;
-	
+
 	@GetMapping("/menu")
 	public String showMenu(HttpSession session, Model model) {
-		if(session.getAttribute("usuario") == null) {
+		if (session.getAttribute("usuario") == null) {
 			return "redirect:/";
 		}
-			
-		  
-        String correo = session.getAttribute("usuario").toString();
-        UsuarioEntity usuarioEntity = usuarioService.buscarUsuarioPorCorreo(correo);
-        
-        // Añade todo el objeto usuarioEntity al modelo
-        model.addAttribute("usuario", usuarioEntity);
 
-        List<ProductoEntity> productos = productoService.buscarTodosProductos();
-        model.addAttribute("productos", productos);
-        
-        return "menu";
+		String correo = session.getAttribute("usuario").toString();
+		UsuarioEntity usuarioEntity = usuarioService.buscarUsuarioPorCorreo(correo);
+		model.addAttribute("foto", usuarioEntity.getUrlImagen());
+		model.addAttribute("nombre", usuarioEntity.getNombre());
+		model.addAttribute("apellidos", usuarioEntity.getApellidos());
+
+		List<ProductoEntity> productos = productoService.buscarTodosProductos();
+		model.addAttribute("productos", productos);
+
+		return "menu";
 	}
 	
+	 @GetMapping("/nuevo_producto")
+	    public String showRegistrarProducto(Model model) {
+	        model.addAttribute("producto", new ProductoEntity());
+	        List<CategoriaEntity> categorias = categoriaRepository.findAll();
+	        if (categorias.isEmpty()) {
+	            CategoriaEntity categoriaLacteos = new CategoriaEntity(null, "Lacteos");
+	            CategoriaEntity categoriaEmbutidos = new CategoriaEntity(null, "Embutidos");
+	            CategoriaEntity categoriaAbarrotes = new CategoriaEntity(null, "Abarrotes");
+	            categoriaRepository.saveAll(List.of(categoriaLacteos, categoriaEmbutidos, categoriaAbarrotes));
+	            categorias = List.of(categoriaLacteos, categoriaEmbutidos, categoriaAbarrotes);
+	        }
+	        model.addAttribute("categorias", categorias);
+	        return "registrar_producto";
+	    }
+
+	    @PostMapping("/nuevo_producto")
+	    public String registrarProducto(@ModelAttribute ProductoEntity producto, Model model) {
+	    	CategoriaEntity categoria = categoriaRepository.findById(producto.getCategoriaEntity().getCategoria_id())
+	                .orElseThrow(() -> new IllegalArgumentException("Categoría no válida"));
+	        producto.setCategoriaEntity(categoria);
+	    	productoService.save(producto);	
+	        return "redirect:/menu";
+	    }
+
 }
